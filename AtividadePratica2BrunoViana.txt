@@ -1,0 +1,290 @@
+Ex1)
+classe facade:
+package Facade;
+
+import lista.Contato;
+import lista.Lista;
+import lista.Modo;
+
+public class Facade {
+    public void usaLista(){
+        Lista lista = new Lista();
+        lista.inserir(new Contato("Mel", "1234-5555"));
+        lista.inserir(new Contato("Gaia", "3456-5678"));
+        lista.inserir(new Contato("Tonica", "4568-5695"));
+        lista.inserir(new Contato("Ronda", "5612-7890"));
+        lista.inserir(new Contato("Mustaf�", "3455-8876"));
+
+        try {
+            lista.inserir(new Contato("TESTE", "0000-0000"),4);
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
+        lista.exibir(Modo.ESQUERDA);
+    }
+}
+
+classe principal:
+
+package cliente;
+
+import Facade.Facade;
+
+/*
+*  Professor Gerson Risso
+ */
+public class UsaLista {
+
+    public static void main(String[] args) {
+        Facade f = new Facade();
+        f.usaLista();
+    }
+
+}
+
+Ex2)
+A)
+Cliente:
+package subSistema;
+
+import java.util.List;
+
+public class Cliente {
+    private String nome;
+    private Endereco endereco;
+    private List<Produto> lista;
+    public Cliente() {
+    }
+    public Cliente(String nome, Endereco endereco, List<Produto> lista) {
+        this.nome = nome;
+        this.endereco = endereco;
+        this.lista = lista;
+    }
+    public String getNome() {
+        return nome;
+    }
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+    public Endereco getEndereco() {
+        return endereco;
+    }
+    public void setEndereco(Endereco endereco) {
+        this.endereco = endereco;
+    }
+    public List<Produto> getLista() {
+        return lista;
+    }
+    public void setLista(List<Produto> lista) {
+        this.lista = lista;
+    }
+    @Override
+    public String toString() {
+        return "Cliente [nome=" + nome + ", endereco=" + endereco + ", lista=" + lista + "]";
+    }
+
+}
+
+Endereco:
+package subSistema;
+
+public class Endereco {
+    private String rua;
+    private int numero;
+    public Endereco() {
+    }
+    public Endereco(String rua, int numero) {
+        this.rua = rua;
+        this.numero = numero;
+    }
+    public String getRua() {
+        return rua;
+    }
+    public void setRua(String rua) {
+        this.rua = rua;
+    }
+    public int getNumero() {
+        return numero;
+    }
+    public void setNumero(int numero) {
+        this.numero = numero;
+    }
+    @Override
+    public String toString() {
+        return "Endereco [rua=" + rua + ", numero=" + numero + "]";
+    }
+
+    
+}
+Produto:
+package subSistema;
+
+public class Produto {
+    private String nome;
+    private String categoria;
+    private double preco;
+    public Produto() {
+    }
+    public Produto(String nome, String categoria, double preco) {
+        this.nome = nome;
+        this.categoria = categoria;
+        this.preco = preco;
+    }
+    public String getNome() {
+        return nome;
+    }
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+    public String getCategoria() {
+        return categoria;
+    }
+    public void setCategoria(String categoria) {
+        this.categoria = categoria;
+    }
+    public double getPreco() {
+        return preco;
+    }
+    public void setPreco(double preco) {
+        this.preco = preco;
+    }
+    @Override
+    public String toString() {
+        return "Produto [nome=" + nome + ", categoria=" + categoria + ", preco=" + preco + "]";
+    }
+}
+
+B)
+Facade:
+package facade;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import subSistema.Cliente;
+import subSistema.Endereco;
+import subSistema.Produto;
+
+public class Facade {
+ 
+    public void geraRecibo(){
+        Endereco e = new Endereco("Rua Amelia Petrela", 21);
+        List<Produto> lstProduto = listaProdutos();
+        Cliente c = new Cliente("Bruno", e, lstProduto);
+        System.out.println(c.toString());
+    }
+
+    public List<Produto> listaProdutos(){
+        List<Produto> lstProduto = new ArrayList<>();
+        lstProduto.add(new Produto("Leite", "Alimento", 15.60));
+        lstProduto.add(new Produto("Bife", "Alimento", 60.50));
+        lstProduto.add(new Produto("Escova de Dentes", "Objeto", 5.60));
+
+        return lstProduto;
+    }
+}
+
+C)
+Facade com Singleton:
+
+package facade;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import subSistema.Cliente;
+import subSistema.Endereco;
+import subSistema.Produto;
+
+public class Facade {
+    private static Facade facade = new Facade();
+
+    private Facade(){}
+   
+    public static Facade getObject(){
+        if (facade == null) {
+            return facade=new Facade();
+        } else {
+            return facade;
+        }
+
+    }
+
+    public void geraRecibo(){
+        Endereco e = new Endereco("Rua Amelia Petrela", 21);
+        List<Produto> lstProduto = listaProdutos();
+        Cliente c = new Cliente("Bruno", e, lstProduto);
+        System.out.println(c.toString());
+    }
+
+    public List<Produto> listaProdutos(){
+        List<Produto> lstProduto = new ArrayList<>();
+        lstProduto.add(new Produto("Leite", "Alimento", 15.60));
+        lstProduto.add(new Produto("Bife", "Alimento", 60.50));
+        lstProduto.add(new Produto("Escova de Dentes", "Objeto", 5.60));
+
+        return lstProduto;
+    }
+}
+
+Classe Main:
+
+import facade.Facade;
+
+public class App {
+    public static void main(String[] args) throws Exception {
+        Facade f = Facade.getObject();
+        f.geraRecibo();
+    }
+}
+
+3)
+Facade:
+package facade;
+
+import composite.Component;
+import composite.Composite;
+import composite.Leaf;
+
+public class Facade {
+    public void geraCesta(){
+      Composite cesta=new Composite("Cesta de caf�");
+      Component produto1=new Leaf(12.56, "caf�");
+      Component produto2=new Leaf(10.26, "leite");
+      Component produto3=new Leaf(6.12, "p�o de queijo");
+      Component produto4=new Leaf(8.23, "bombom cereja");
+      Component produto5=new Leaf(9.78, "bombom licor");
+      
+      Composite caixa=new Composite("Caixa de bombom");
+      caixa.adicionar(produto5);
+      caixa.adicionar(produto4);
+      
+      cesta.adicionar(produto1);
+      cesta.adicionar(produto2);
+      cesta.adicionar(produto3);
+      cesta.adicionar(caixa);
+      
+      System.out.println(cesta);
+      System.out.println("Total: "+cesta.getPreco());
+    }
+}
+
+Main:
+package cliente;
+
+import facade.Facade;
+
+
+/*
+*  Professor Gerson Risso
+*/
+public class UsaCesta {
+ 
+    public static void main(String[] args) {
+      Facade f = new Facade();
+      f.geraCesta();
+    }
+
+}
+
+
